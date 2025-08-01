@@ -14,6 +14,11 @@ from routes.employees import employees_router
 from routes.recruitment import recruitment_router
 from routes.attendance import attendance_router
 from services.hr_service import HRService
+from services.ai_recruitment import AIRecruitmentService
+from config.database import hr_db_manager
+from middleware.auth import HRAuthMiddleware
+from middleware.validation import ValidationMiddleware
+from middleware.logging import HRLoggingMiddleware
 
 
 @asynccontextmanager
@@ -21,17 +26,21 @@ async def lifespan(app: FastAPI):
     """Application lifespan manager."""
     # Startup
     logger.info("Starting HR Agent...")
-    await db_manager.connect()
+    await hr_db_manager.connect()
     
     # Initialize HR service
     app.state.hr_service = HRService()
     await app.state.hr_service.initialize()
     
+    # Initialize AI Recruitment service
+    app.state.ai_recruitment_service = AIRecruitmentService()
+    await app.state.ai_recruitment_service.initialize()
+    
     yield
     
     # Shutdown
     logger.info("Shutting down HR Agent...")
-    await db_manager.disconnect()
+    await hr_db_manager.disconnect()
 
 
 # Create FastAPI app
@@ -43,6 +52,9 @@ app = FastAPI(
 )
 
 # Setup middleware
+app.middleware("http")(HRLoggingMiddleware())
+app.middleware("http")(ValidationMiddleware())
+app.middleware("http")(HRAuthMiddleware())
 app.middleware("http")(logging_middleware)
 app.middleware("http")(security_headers_middleware)
 setup_cors(app)
@@ -70,13 +82,44 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    return {
+    # Check database health
+    db_healthy = await hr_db_manager.health_check()
+    
+    health_status = {
         "status": "healthy",
         "service": "hr-agent",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "database": "healthy" if db_healthy else "unhealthy",
+        "ai_features": "enabled" if hasattr(app.state, 'ai_recruitment_service') else "disabled"
     }
+    
+    if not db_healthy:
+        health_status["status"] = "unhealthy"
+    
+    return health_status
 
 
+@app.get("/capabilities")
+async def get_capabilities():
+    """Get HR agent capabilities."""
+    return {
+        "service": "hr-agent",
+        "capabilities": [
+            "employee_management",
+            "recruitment",
+            "attendance_tracking",
+            "ai_resume_analysis",
+            "ai_interviews",
+            "performance_tracking",
+            "leave_management"
+        ],
+        "ai_features": {
+            "resume_analysis": True,
+            "ai_interviews": True,
+            "mood_tracking": True,
+            "attrition_prediction": True
+        }
+    }
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(

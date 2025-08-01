@@ -8,6 +8,7 @@ from enum import Enum
 
 from shared_libs.auth import get_current_user
 from shared_libs.models import BaseDocument
+from controllers.recruitment_controller import RecruitmentController
 
 
 router = APIRouter()
@@ -55,12 +56,10 @@ async def create_job_posting(
     current_user: dict = Depends(get_current_user)
 ):
     """Create a new job posting."""
-    # This would integrate with a recruitment service
-    return {
-        "message": "Job posting created successfully",
-        "job_id": "JOB001",
-        "title": job_data.title
-    }
+    from main import app
+    controller = RecruitmentController(app.state.ai_recruitment_service)
+    
+    return await controller.create_job_posting(job_data.dict(), current_user)
 
 
 @router.get("/jobs", response_model=List[dict])
@@ -105,11 +104,10 @@ async def submit_application(
     current_user: dict = Depends(get_current_user)
 ):
     """Submit a job application."""
-    return {
-        "message": "Application submitted successfully",
-        "application_id": "APP001",
-        "candidate_name": application_data.candidate_name
-    }
+    from main import app
+    controller = RecruitmentController(app.state.ai_recruitment_service)
+    
+    return await controller.submit_application(application_data.dict(), current_user)
 
 
 @router.get("/applications", response_model=List[dict])
@@ -146,6 +144,31 @@ async def list_applications(
         applications = [app for app in applications if app["status"] == status]
     
     return applications
+
+
+@router.post("/ai-interview", response_model=dict)
+async def conduct_ai_interview(
+    candidate_id: str,
+    interview_type: str = "technical",
+    current_user: dict = Depends(get_current_user)
+):
+    """Conduct AI-powered interview."""
+    from main import app
+    controller = RecruitmentController(app.state.ai_recruitment_service)
+    
+    return await controller.conduct_ai_interview(candidate_id, interview_type, current_user)
+
+
+@router.get("/analytics", response_model=dict)
+async def get_recruitment_analytics(
+    days: int = Query(30, ge=1, le=365),
+    current_user: dict = Depends(get_current_user)
+):
+    """Get recruitment analytics."""
+    from main import app
+    controller = RecruitmentController(app.state.ai_recruitment_service)
+    
+    return await controller.get_recruitment_analytics(days, current_user)
 
 
 recruitment_router = router

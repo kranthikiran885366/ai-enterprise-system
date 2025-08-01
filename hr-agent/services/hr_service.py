@@ -8,6 +8,8 @@ from loguru import logger
 
 from shared_libs.database import get_database
 from models.employee import Employee, EmployeeCreate, EmployeeUpdate
+from utils.helpers import generate_employee_id
+from utils.notifications import send_system_alert
 
 
 class HRService:
@@ -34,8 +36,12 @@ class HRService:
     async def create_employee(self, employee_data: EmployeeCreate) -> Optional[Employee]:
         """Create a new employee."""
         try:
-            # Generate employee ID
-            employee_id = f"EMP{str(uuid.uuid4())[:8].upper()}"
+            # Generate employee ID using helper
+            employee_id = generate_employee_id(
+                employee_data.first_name,
+                employee_data.last_name,
+                employee_data.hire_date
+            )
             
             employee_dict = employee_data.dict()
             employee_dict["employee_id"] = employee_id
@@ -53,6 +59,22 @@ class HRService:
             
         except Exception as e:
             logger.error(f"Failed to create employee: {e}")
+            await send_system_alert("employee_creation_failed", str(e))
+            return None
+    
+    async def get_employee_by_email(self, email: str) -> Optional[Employee]:
+        """Get an employee by email address."""
+        try:
+            employee_doc = await self.db[self.employees_collection].find_one(
+                {"email": email}
+            )
+            
+            if employee_doc:
+                return Employee(**employee_doc)
+            return None
+            
+        except Exception as e:
+            logger.error(f"Failed to get employee by email {email}: {e}")
             return None
     
     async def get_employee(self, employee_id: str) -> Optional[Employee]:
