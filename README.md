@@ -170,5 +170,5 @@ This project is licensed under the MIT License.
 
 Now let's create the shared libraries:
 
-```python file="shared-libs/__init__.py"
+\`\`\`python file="shared-libs/__init__.py"
 """Shared libraries for the AI Enterprise System."""

@@ -201,7 +201,7 @@ db.rules.createIndex({ "status": 1, "priority": -1 })
 \`\`\`
 
 ### Caching Strategy
-```python
+\`\`\`python
 # Redis caching configuration
 CACHE_CONFIG = {
     "default": {
