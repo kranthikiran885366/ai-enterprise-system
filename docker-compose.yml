@@ -1,0 +1,171 @@
+version: '3.8'
+
+services:
+  # Databases
+  mongodb:
+    image: mongo:7.0
+    container_name: enterprise_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: enterprise_redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: enterprise_rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password123
+
+  # Microservices
+  orchestrator:
+    build: ./orchestrator
+    container_name: enterprise_orchestrator
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672/
+    depends_on:
+      - mongodb
+      - redis
+      - rabbitmq
+
+  hr-agent:
+    build: ./hr-agent
+    container_name: enterprise_hr
+    restart: always
+    ports:
+      - "8001:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  finance-agent:
+    build: ./finance-agent
+    container_name: enterprise_finance
+    restart: always
+    ports:
+      - "8002:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  sales-agent:
+    build: ./sales-agent
+    container_name: enterprise_sales
+    restart: always
+    ports:
+      - "8003:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  marketing-agent:
+    build: ./marketing-agent
+    container_name: enterprise_marketing
+    restart: always
+    ports:
+      - "8004:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  it-agent:
+    build: ./it-agent
+    container_name: enterprise_it
+    restart: always
+    ports:
+      - "8005:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  admin-agent:
+    build: ./admin-agent
+    container_name: enterprise_admin
+    restart: always
+    ports:
+      - "8006:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  legal-agent:
+    build: ./legal-agent
+    container_name: enterprise_legal
+    restart: always
+    ports:
+      - "8007:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  support-agent:
+    build: ./support-agent
+    container_name: enterprise_support
+    restart: always
+    ports:
+      - "8008:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  ai-decision-engine:
+    build: ./ai-decision-engine
+    container_name: enterprise_ai_engine
+    restart: always
+    ports:
+      - "8009:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+      - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672/
+    depends_on:
+      - mongodb
+      - orchestrator
+      - rabbitmq
+
+volumes:
+  mongodb_data:
