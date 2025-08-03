@@ -167,5 +167,83 @@ services:
       - orchestrator
       - rabbitmq
 
+  sales-agent:
+    build: ./sales-agent
+    container_name: enterprise_sales
+    restart: always
+    ports:
+      - "8003:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  marketing-agent:
+    build: ./marketing-agent
+    container_name: enterprise_marketing
+    restart: always
+    ports:
+      - "8004:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  it-agent:
+    build: ./it-agent
+    container_name: enterprise_it
+    restart: always
+    ports:
+      - "8005:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  admin-agent:
+    build: ./admin-agent
+    container_name: enterprise_admin
+    restart: always
+    ports:
+      - "8006:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  legal-agent:
+    build: ./legal-agent
+    container_name: enterprise_legal
+    restart: always
+    ports:
+      - "8007:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
+  support-agent:
+    build: ./support-agent
+    container_name: enterprise_support
+    restart: always
+    ports:
+      - "8008:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - ORCHESTRATOR_URL=http://orchestrator:8000
+    depends_on:
+      - mongodb
+      - orchestrator
+
 volumes:
   mongodb_data:
