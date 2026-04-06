@@ -1,0 +1,55 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: enterprise-ingress
+  namespace: enterprise
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - api.enterprise.local
+    - dashboard.enterprise.local
+    secretName: enterprise-tls
+  rules:
+  - host: api.enterprise.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway
+            port:
+              number: 8000
+  - host: dashboard.enterprise.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: enterprise
+  labels:
+    app: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+    protocol: TCP

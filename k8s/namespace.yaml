@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: enterprise
+  labels:
+    name: enterprise
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: enterprise-config
+  namespace: enterprise
+data:
+  LOG_LEVEL: "INFO"
+  DEBUG: "false"
+  DATABASE_POOL_SIZE: "20"
+  REDIS_URL: "redis://redis:6379"
+  MONGODB_URL: "mongodb://mongodb:27017/enterprise"
+  DATABASE_URL: "postgresql://enterprise_user:password123@postgres:5432/enterprise"
+  API_GATEWAY_PORT: "8000"
+  SERVICE_PORT: "8001"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: enterprise-secrets
+  namespace: enterprise
+type: Opaque
+stringData:
+  OPENAI_API_KEY: "sk-"
+  ANTHROPIC_API_KEY: "sk-ant-"
+  GOOGLE_API_KEY: ""
+  DEEPSEEK_API_KEY: ""
+  POSTGRES_PASSWORD: "password123"
+  MONGODB_PASSWORD: "password123"
+  JWT_SECRET: "super-secret-jwt-key-change-in-production"
