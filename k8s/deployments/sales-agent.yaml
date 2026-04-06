@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sales-agent
+  namespace: enterprise
+  labels:
+    app: sales-agent
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sales-agent
+  template:
+    metadata:
+      labels:
+        app: sales-agent
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: sales-agent
+        image: enterprise-registry/sales-agent:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8001
+          name: http
+          protocol: TCP
+        env:
+        - name: SERVICE_NAME
+          value: "sales"
+        - name: SERVICE_PORT
+          value: "8001"
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: enterprise-config
+              key: LOG_LEVEL
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: enterprise-config
+              key: DATABASE_URL
+        - name: MONGODB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: enterprise-config
+              key: MONGODB_URL
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: enterprise-config
+              key: REDIS_URL
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: enterprise-secrets
+              key: OPENAI_API_KEY
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: enterprise-secrets
+              key: ANTHROPIC_API_KEY
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "400m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sales-agent
+  namespace: enterprise
+  labels:
+    app: sales-agent
+spec:
+  type: ClusterIP
+  selector:
+    app: sales-agent
+  ports:
+  - name: http
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sales-agent-hpa
+  namespace: enterprise
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sales-agent
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
