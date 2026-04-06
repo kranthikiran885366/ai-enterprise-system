@@ -13,6 +13,29 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password123
     volumes:
       - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.adminCommand("ping")' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgresql:
+    image: postgres:16-alpine
+    container_name: enterprise_postgresql
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: enterprise_user
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: enterprise
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U enterprise_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7.2-alpine
@@ -20,6 +43,11 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3.12-management
@@ -31,6 +59,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: password123
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Microservices
   orchestrator:
@@ -41,12 +74,22 @@ services:
       - "8000:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - REDIS_URL=redis://redis:6379
       - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672/
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - redis
-      - rabbitmq
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   hr-agent:
     build: ./hr-agent
@@ -56,10 +99,19 @@ services:
       - "8001:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
 
   finance-agent:
     build: ./finance-agent
@@ -69,10 +121,19 @@ services:
       - "8002:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
 
   sales-agent:
     build: ./sales-agent
@@ -82,10 +143,19 @@ services:
       - "8003:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
 
   marketing-agent:
     build: ./marketing-agent
@@ -95,10 +165,19 @@ services:
       - "8004:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
 
   it-agent:
     build: ./it-agent
@@ -108,10 +187,19 @@ services:
       - "8005:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
 
   admin-agent:
     build: ./admin-agent
@@ -121,10 +209,19 @@ services:
       - "8006:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
 
   legal-agent:
     build: ./legal-agent
@@ -134,10 +231,19 @@ services:
       - "8007:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
 
   support-agent:
     build: ./support-agent
@@ -147,10 +253,19 @@ services:
       - "8008:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
 
   ai-decision-engine:
     build: ./ai-decision-engine
@@ -160,90 +275,23 @@ services:
       - "8009:8000"
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
+      - POSTGRESQL_URL=postgresql://enterprise_user:password123@postgresql:5432/enterprise
       - ORCHESTRATOR_URL=http://orchestrator:8000
       - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672/
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     depends_on:
-      - mongodb
-      - orchestrator
-      - rabbitmq
-
-  sales-agent:
-    build: ./sales-agent
-    container_name: enterprise_sales
-    restart: always
-    ports:
-      - "8003:8000"
-    environment:
-      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
-      - ORCHESTRATOR_URL=http://orchestrator:8000
-    depends_on:
-      - mongodb
-      - orchestrator
-
-  marketing-agent:
-    build: ./marketing-agent
-    container_name: enterprise_marketing
-    restart: always
-    ports:
-      - "8004:8000"
-    environment:
-      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
-      - ORCHESTRATOR_URL=http://orchestrator:8000
-    depends_on:
-      - mongodb
-      - orchestrator
-
-  it-agent:
-    build: ./it-agent
-    container_name: enterprise_it
-    restart: always
-    ports:
-      - "8005:8000"
-    environment:
-      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
-      - ORCHESTRATOR_URL=http://orchestrator:8000
-    depends_on:
-      - mongodb
-      - orchestrator
-
-  admin-agent:
-    build: ./admin-agent
-    container_name: enterprise_admin
-    restart: always
-    ports:
-      - "8006:8000"
-    environment:
-      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
-      - ORCHESTRATOR_URL=http://orchestrator:8000
-    depends_on:
-      - mongodb
-      - orchestrator
-
-  legal-agent:
-    build: ./legal-agent
-    container_name: enterprise_legal
-    restart: always
-    ports:
-      - "8007:8000"
-    environment:
-      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
-      - ORCHESTRATOR_URL=http://orchestrator:8000
-    depends_on:
-      - mongodb
-      - orchestrator
-
-  support-agent:
-    build: ./support-agent
-    container_name: enterprise_support
-    restart: always
-    ports:
-      - "8008:8000"
-    environment:
-      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/enterprise?authSource=admin
-      - ORCHESTRATOR_URL=http://orchestrator:8000
-    depends_on:
-      - mongodb
-      - orchestrator
+      mongodb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      orchestrator:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
   mongodb_data:
+  postgresql_data:

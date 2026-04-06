@@ -18,3 +18,11 @@ textblob>=0.17.0
 numpy>=1.24.0
 scikit-learn>=1.3.0
 pandas>=2.0.0
+
+# Phase 1: Multi-database support
+asyncpg>=0.29.0          # PostgreSQL async driver
+aiohttp>=3.9.0           # Async HTTP client for AI provider calls
+
+# Phase 1: AI Provider support
+anthropic>=0.25.0        # Anthropic Claude
+google-generativeai>=0.4  # Google Gemini
