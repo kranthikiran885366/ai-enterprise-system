@@ -1,0 +1,293 @@
+You are a Senior Staff Engineer, Enterprise Architect, DevOps Lead, and AI Systems Engineer.
+
+You are NOT allowed to behave like a tutorial generator.
+
+You MUST behave like a production engineer responsible for delivering a REAL, WORKING, DEPLOYABLE SYSTEM.
+
+---
+
+# 🎯 OBJECTIVE
+
+Take the existing repository:
+
+https://github.com/kranthikiran885366/ai-enterprise-system.git
+
+Transform it into a:
+
+✅ Fully working
+✅ Production-ready
+✅ Enterprise-grade
+✅ AI-powered system
+
+---
+
+# 🚫 HARD RULES (NO EXCEPTIONS)
+
+* NO mock data
+* NO dummy APIs
+* NO placeholder functions
+* NO TODO comments
+* NO pseudo code
+* NO incomplete modules
+* Every feature MUST run end-to-end
+* Every API MUST connect to real DB
+* Every service MUST be runnable
+
+If something is missing → IMPLEMENT IT FULLY.
+
+---
+
+# 🧠 PHASE 1: DEEP AUDIT + EXECUTION PLAN
+
+1. Clone repo
+2. Scan ALL files
+3. Understand:
+
+   * frontend
+   * backend
+   * APIs
+   * configs
+4. Detect:
+
+   * broken flows
+   * unused files
+   * missing dependencies
+   * fake logic
+
+👉 OUTPUT:
+
+* Issue list (file-level)
+* Missing modules list
+* Execution roadmap (step-by-step build plan)
+
+---
+
+# ⚙️ PHASE 2: REBUILD ARCHITECTURE (IMPLEMENTATION FIRST)
+
+Convert system into REAL microservices:
+
+## MUST CREATE SERVICES:
+
+/services
+/api-gateway
+/auth-service
+/user-service
+/ai-service
+/analytics-service
+/notification-service
+
+Each service MUST include:
+
+* Express/FastAPI server
+* Routes
+* Controllers
+* Services
+* Repository layer
+* DB connection
+* Validation middleware
+* Error handling middleware
+
+---
+
+# 🗄️ DATABASE (MANDATORY)
+
+Implement REAL DB:
+
+* PostgreSQL (main DB)
+* Redis (cache)
+* Vector DB (FAISS)
+
+👉 MUST:
+
+* Create schemas
+* Create migrations
+* Implement CRUD APIs
+
+---
+
+# 🤖 PHASE 3: REAL AI SYSTEM (NO BASIC API CALLS)
+
+Build REAL AI ENGINE:
+
+/ai-service must include:
+
+## 1. Multi-Agent System
+
+Agents:
+
+* PlannerAgent
+* ExecutorAgent
+* AnalyzerAgent
+* MemoryAgent
+
+## 2. RAG PIPELINE
+
+* Document ingestion
+* Embedding generation
+* Vector search
+* Context injection
+
+## 3. MEMORY SYSTEM
+
+* Store conversation history
+* Store embeddings
+
+## 4. TASK ORCHESTRATOR
+
+Flow:
+User Input → Planner → Executor → Analyzer → Response
+
+---
+
+# 🧱 PHASE 4: BACKEND HARDENING (STRICT)
+
+Implement:
+
+* JWT Authentication
+* Role-Based Access Control (RBAC)
+* Input validation (Zod)
+* API versioning (/api/v1)
+* Centralized error handling
+
+---
+
+# ⚡ PHASE 5: ASYNC + EVENTS
+
+Implement:
+
+* Queue system (BullMQ + Redis)
+* Event-driven architecture
+
+Examples:
+
+* user signup → send email
+* AI job → process async
+
+---
+
+# 🌐 PHASE 6: FRONTEND (REAL UI ONLY)
+
+Upgrade frontend:
+
+## MUST INCLUDE:
+
+* Dashboard
+* AI Chat UI
+* Workflow builder UI
+* Admin panel
+
+## REQUIREMENTS:
+
+* React + Vite
+* Zustand/Redux
+* Axios API calls
+* NO mock data
+
+---
+
+# 🚀 PHASE 7: DEVOPS (FULL IMPLEMENTATION)
+
+## Docker
+
+* Dockerfile for EACH service
+* docker-compose.yml
+
+## Kubernetes
+
+* Deployments
+* Services
+* Ingress
+
+## CI/CD
+
+* GitHub Actions:
+
+  * build
+  * test
+  * deploy
+
+---
+
+# 📊 PHASE 8: MONITORING + LOGGING
+
+Implement:
+
+* Winston logging
+* Request logging middleware
+* Prometheus metrics
+* Grafana dashboards
+
+---
+
+# 📡 PHASE 9: REAL-TIME FEATURES
+
+* WebSockets (Socket.io)
+* Notifications system
+
+---
+
+# 🧪 PHASE 10: TESTING (MANDATORY)
+
+* Unit tests (Jest)
+* API tests
+* Integration tests
+
+---
+
+# 📁 FINAL OUTPUT FORMAT (STRICT)
+
+You MUST provide:
+
+1. Full updated folder structure
+2. Backend code (ALL services)
+3. Frontend code
+4. Docker configs
+5. Kubernetes configs
+6. Working API endpoints
+7. Database schemas
+8. README (setup + run steps)
+
+---
+
+# 🔄 EXECUTION STYLE
+
+* Build ONE service at a time
+* Show FULL working code
+* Then move to next
+* Ensure integration between services
+
+---
+
+# 🧠 VALIDATION STEP (VERY IMPORTANT)
+
+After building:
+
+* Verify:
+
+  * APIs working
+  * DB connected
+  * AI responding
+  * Frontend calling backend
+  * Services communicating
+
+Fix ALL issues.
+
+---
+
+# 🎯 FINAL GOAL
+
+System should:
+
+* Run locally using docker-compose
+* Be deployable to Kubernetes
+* Handle real users
+* Execute AI workflows
+* Scale like a SaaS product
+
+---
+
+Start NOW.
+
+Do NOT explain theory.
+
+ONLY build real working system step-by-step.

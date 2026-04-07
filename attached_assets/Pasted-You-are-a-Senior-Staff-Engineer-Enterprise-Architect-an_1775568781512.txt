@@ -1,0 +1,227 @@
+You are a Senior Staff Engineer, Enterprise Architect, and AI Systems Expert.
+
+Your task is to deeply analyze and upgrade an existing GitHub repository into a FULLY PRODUCTION-READY ENTERPRISE AI SYSTEM.
+
+Repository:
+https://github.com/kranthikiran885366/ai-enterprise-system.git
+
+---
+
+# 🧠 PHASE 1: DEEP CODEBASE ANALYSIS (MANDATORY)
+
+1. Clone and scan the entire repository.
+2. Understand:
+
+   * Project structure (frontend, backend, services)
+   * Tech stack used
+   * Existing features and modules
+   * API structure
+   * Database usage (if any)
+   * AI integrations (if any)
+3. Identify:
+
+   * Missing features
+   * Dummy/mock logic
+   * Incomplete modules
+   * Security gaps
+   * Performance issues
+   * Scalability limitations
+
+👉 OUTPUT:
+
+* Detailed audit report
+* List of broken/incomplete functionalities
+* List of missing enterprise-level components
+
+---
+
+# ⚙️ PHASE 2: ARCHITECTURE REDESIGN (ENTERPRISE LEVEL)
+
+Redesign the system into:
+
+## 🧩 Microservices Architecture
+
+* API Gateway
+* Auth Service (JWT + OAuth)
+* AI Service (LLM + Agents)
+* User Service
+* Analytics Service
+* Notification Service
+
+## 🗄️ Data Layer
+
+* MongoDB / PostgreSQL
+* Redis (caching)
+* Vector DB (FAISS / Pinecone)
+
+## 🔐 Security Layer
+
+* Role-Based Access Control (RBAC)
+* Rate limiting
+* Input validation (Zod/Joi)
+* Encryption (HTTPS, hashing)
+
+## 🚀 DevOps Layer
+
+* Docker (multi-stage builds)
+* Kubernetes deployment configs
+* CI/CD pipeline (GitHub Actions / Jenkins)
+* Monitoring (Prometheus + Grafana)
+* Logging (Winston/Pino + ELK)
+
+👉 OUTPUT:
+
+* Full architecture diagram (text-based)
+* Folder structure (production-level)
+* Service-to-service communication flow
+
+---
+
+# 🤖 PHASE 3: AI SYSTEM UPGRADE (CORE FOCUS)
+
+Transform into a REAL AI system:
+
+## Implement:
+
+* Multi-Agent System
+* Task orchestration engine
+* Memory system (vector DB)
+* RAG pipeline (retrieval augmented generation)
+* Prompt templates + management
+
+## Agents:
+
+* Planner Agent
+* Executor Agent
+* Analyzer Agent
+* Memory Agent
+
+## Features:
+
+* Context-aware responses
+* Task chaining
+* Autonomous workflows
+
+👉 NO basic API calls — MUST be intelligent system.
+
+---
+
+# 🧱 PHASE 4: BACKEND HARDENING
+
+Replace ALL dummy logic with real implementations:
+
+## Required:
+
+* Real database CRUD operations
+* Proper API controllers/services
+* Error handling middleware
+* Validation middleware
+* Async processing (queues like BullMQ)
+
+## Add:
+
+* API versioning (/api/v1)
+* Clean architecture (controllers → services → repositories)
+
+---
+
+# 🌐 PHASE 5: FRONTEND (PRODUCTION UI/UX)
+
+Upgrade frontend to:
+
+* Professional dashboard UI
+* AI interaction panel (chat + workflows)
+* Admin panel
+* Analytics visualization
+
+## Requirements:
+
+* Responsive design
+* Smooth transitions
+* State management (Redux/Zustand)
+* API integration (NO mock data)
+
+---
+
+# 🚀 PHASE 6: DEVOPS & DEPLOYMENT
+
+Implement FULL pipeline:
+
+## CI/CD:
+
+* Build → Test → Deploy
+
+## Docker:
+
+* Dockerfile for each service
+* docker-compose for local dev
+
+## Kubernetes:
+
+* Deployment YAMLs
+* Services
+* Ingress
+
+## Monitoring:
+
+* Prometheus metrics
+* Grafana dashboards
+
+---
+
+# 📊 PHASE 7: ADVANCED ENTERPRISE FEATURES
+
+Add UNIQUE features:
+
+* AI-powered analytics dashboard
+* Workflow automation engine
+* Event-driven architecture (Kafka/RabbitMQ)
+* Real-time notifications (WebSockets)
+* Audit logs
+* Usage tracking (SaaS ready)
+
+---
+
+# 🧪 PHASE 8: TESTING
+
+* Unit tests
+* Integration tests
+* API tests (Postman/Swagger)
+* Load testing
+
+---
+
+# 📁 FINAL OUTPUT REQUIREMENTS
+
+1. Fully updated project structure
+2. Complete backend code (production-ready)
+3. Fully functional frontend
+4. DevOps configs (Docker + K8s)
+5. No TODOs, no mock logic
+6. Real working system
+7. README with setup + deployment steps
+8. API documentation (Swagger)
+
+---
+
+# 🚫 STRICT RULES
+
+* NO mock data
+* NO placeholder functions
+* NO incomplete modules
+* NO “example only” code
+* EVERYTHING must be REAL and WORKING
+
+---
+
+# 🎯 GOAL
+
+Transform this repo into:
+👉 A STARTUP-READY
+👉 SCALABLE
+👉 ENTERPRISE-GRADE
+👉 AI-POWERED PLATFORM
+
+---
+
+Start execution step-by-step and do NOT skip any phase.

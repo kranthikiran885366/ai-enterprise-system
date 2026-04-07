@@ -13,6 +13,7 @@ import {
   Server,
   ShieldAlert,
   Settings,
+  Bot,
 } from 'lucide-react';
 
 const menuItems = [
@@ -20,6 +21,11 @@ const menuItems = [
     label: 'Dashboard',
     icon: BarChart3,
     href: '/dashboard',
+  },
+  {
+    label: 'AI Assistant',
+    icon: Bot,
+    href: '/dashboard/ai',
   },
   {
     label: 'Sales',
